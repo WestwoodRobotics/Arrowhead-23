@@ -98,7 +98,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
         MotionProfile activeProfile = generateProfile(true);
         double profileStart = clock.seconds();
 
-
+        // i dont know what this does, but nothing works when i delete it
         while (!isStopRequested()) {
             telemetry.addData("mode", mode);
 

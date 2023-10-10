@@ -24,7 +24,7 @@ import java.util.*;
 // i've left the non-field centric code in comments in the loop function, just in case field centric turns out to be awful
 @TeleOp(name = "TeleOp")
 public class TeleOpDriveOpMode extends OpMode{
-    DcMotorEx frontLeft, frontRight, backLeft, backRight, slide;
+    DcMotorEx frontLeft, frontRight, backLeft, backRight, slide, slide2;
 
     // IMU var for field centric mode
     IMU babymode;
@@ -61,6 +61,9 @@ public class TeleOpDriveOpMode extends OpMode{
         slide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        slide2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        slide2.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
         // IMU parameters that we probably have to change once we get to testing the manual mode
         IMU.Parameters imuParams = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
@@ -68,6 +71,7 @@ public class TeleOpDriveOpMode extends OpMode{
         babymode.initialize(imuParams);
     }
 
+    // these variables are currently controlling both slides because im assuming they're working in uniform and not independant of each other's actions
     int targetPosition = 1;
     int currentPosition = 0;
     boolean slowMode = false;
@@ -122,6 +126,7 @@ public class TeleOpDriveOpMode extends OpMode{
         double fieldCentricBRP = ((rotY + rotX - fourDriveMechanumRotationalX) * multiplier) / denom;
 
         currentPosition = slide.getCurrentPosition();
+        // currentPosition = slide2.getCurrentPosition(); should also give the same value, assuming both slides are working in uniform
 
         if (gamepad1.left_trigger > 0 ) {
             targetPosition -= 5;
@@ -130,21 +135,35 @@ public class TeleOpDriveOpMode extends OpMode{
             targetPosition += 5;
         }
 
+        /*
+        A bunch of stuff related to the slides, I have no idea the specifics anymore
+         */
         slide.setTargetPosition(targetPosition);
         slide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        slide2.setTargetPosition(targetPosition);
+        slide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
         if (targetPosition > currentPosition) {
             slide.setPower(0.5);
+            slide2.setPower(0.5);
         }
         else if (targetPosition < currentPosition) {
+            slide.setPower(-0.5);
             slide.setPower(-0.5);
         }
         else if (targetPosition == currentPosition) {
             slide.setPower(0);
+            slide2.setPower(0);
         }
 
+        /*
+        Enabling of precise control mode, if it even works
+         */
         if (gamepad1.dpad_up) {
             slowMode = true;
         }
+        // idk what this else is checking for, worst case scenario, assign a specific button to turn precision mode off
         else {
             slowMode = false;
         }

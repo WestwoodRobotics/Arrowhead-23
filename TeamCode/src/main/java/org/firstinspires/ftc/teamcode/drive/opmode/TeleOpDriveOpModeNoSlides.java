@@ -1,31 +1,22 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
+
 import com.qualcomm.hardware.bosch.BHI260IMU;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-// field centric stuff
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import java.util.*;
 
 // TODO: check field centric mode
 // TODO: literally test the entire TeleOp drive LOL
 // slide1 is left ball, slide2 is right ball
 // i've left the non-field centric code in comments in the loop function, just in case field centric turns out to be awful
-@TeleOp(name = "TeleOp")
-public class TeleOpDriveOpMode extends OpMode{
+@TeleOp(name = "TeleOpNoSlides")
+public class TeleOpDriveOpModeNoSlides extends OpMode{
     DcMotorEx frontLeft, frontRight, backLeft, backRight, leftBall, rightBall;
 
     // IMU var for field centric mode
@@ -37,14 +28,14 @@ public class TeleOpDriveOpMode extends OpMode{
 
         babymode = hardwareMap.get(BHI260IMU.class, "IMU");
 
-        leftBall = hardwareMap.get(DcMotorEx.class, "leftBall");
-        rightBall = hardwareMap.get(DcMotorEx.class, "rightBall");
+        //leftBall = hardwareMap.get(DcMotorEx.class, "leftBall");
+        //rightBall = hardwareMap.get(DcMotorEx.class, "rightBall");
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
         backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
         backRight = hardwareMap.get(DcMotorEx.class, "backRight");
 
-        leftBall.setDirection(DcMotorSimple.Direction.FORWARD);
+        //leftBall.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // All set to forward so we can test if any motors are backwards
         frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
@@ -53,7 +44,7 @@ public class TeleOpDriveOpMode extends OpMode{
         backRight.setDirection(DcMotorEx.Direction.FORWARD);
 
         // important slide shit
-        leftBall.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //leftBall.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -61,11 +52,11 @@ public class TeleOpDriveOpMode extends OpMode{
         backRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         // Encoders
-        leftBall.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        leftBall.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //leftBall.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        //leftBall.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        rightBall.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        rightBall.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        //rightBall.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        //rightBall.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         // IMU parameters that we probably have to change once we get to testing the manual mode
         BHI260IMU.Parameters imuParams = new BHI260IMU.Parameters(new RevHubOrientationOnRobot(
@@ -128,7 +119,8 @@ public class TeleOpDriveOpMode extends OpMode{
         double fieldCentricFRP = ((rotY - rotX - fourDriveMechanumRotationalX) * multiplier) / denom;
         double fieldCentricBRP = ((rotY + rotX - fourDriveMechanumRotationalX) * multiplier) / denom;
 
-         currentPosition = leftBall.getCurrentPosition();
+        // currentPosition = leftBall.getCurrentPosition();
+        // currentPosition = slide2.getCurrentPosition(); should also give the same value, assuming both slides are working in uniform
 
         if (gamepad1.left_trigger > 0 ) {
             targetPosition -= 5;
@@ -140,23 +132,23 @@ public class TeleOpDriveOpMode extends OpMode{
         /*
         A bunch of stuff related to the slides, I have no idea the specifics anymore
          */
-        leftBall.setTargetPosition(targetPosition);
-        leftBall.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        //leftBall.setTargetPosition(targetPosition);
+        //leftBall.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-        rightBall.setTargetPosition(targetPosition);
-        rightBall.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        //rightBall.setTargetPosition(targetPosition);
+        //rightBall.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         if (targetPosition > currentPosition) {
-            leftBall.setPower(0.5);
-            rightBall.setPower(0.5);
+            //leftBall.setPower(0.5);
+            //rightBall.setPower(0.5);
         }
         else if (targetPosition < currentPosition) {
-            leftBall.setPower(-0.5);
-            rightBall.setPower(-0.5);
+            //leftBall.setPower(-0.5);
+            //rightBall.setPower(-0.5);
         }
         else if (targetPosition == currentPosition) {
-            leftBall.setPower(0);
-            rightBall.setPower(0);
+            //leftBall.setPower(0);
+            //rightBall.setPower(0);
         }
 
         /*

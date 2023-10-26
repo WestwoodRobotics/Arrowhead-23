@@ -64,8 +64,21 @@ public class TeleOpDriveOpMode extends OpMode{
         leftBall.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         leftBall.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        // drive train using encoders? most likely for roadrunner but this may be removed
         rightBall.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         rightBall.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // IMU parameters that we probably have to change once we get to testing the manual mode
         BHI260IMU.Parameters imuParams = new BHI260IMU.Parameters(new RevHubOrientationOnRobot(

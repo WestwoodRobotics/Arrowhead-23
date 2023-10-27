@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode;
+package org.firstinspires.ftc.teamcode.drive;
 import com.qualcomm.hardware.bosch.BHI260IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -28,6 +28,8 @@ import java.util.*;
 public class TeleOpDriveOpMode extends OpMode{
     DcMotorEx frontLeft, frontRight, backLeft, backRight, leftBall, rightBall;
 
+    Servo gripper, NASA;
+
     // IMU var for field centric mode
     BHI260IMU babymode;
 
@@ -44,7 +46,11 @@ public class TeleOpDriveOpMode extends OpMode{
         backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
         backRight = hardwareMap.get(DcMotorEx.class, "backRight");
 
-        leftBall.setDirection(DcMotorSimple.Direction.FORWARD);
+        gripper = hardwareMap.get(Servo.class, "claw");
+        NASA = hardwareMap.get(Servo.class, "drone");
+
+        leftBall.setDirection(DcMotorEx.Direction.FORWARD);
+        rightBall.setDirection(DcMotorEx.Direction.FORWARD);
 
         // All set to forward so we can test if any motors are backwards
         frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
@@ -52,8 +58,10 @@ public class TeleOpDriveOpMode extends OpMode{
         backLeft.setDirection(DcMotorEx.Direction.REVERSE);
         backRight.setDirection(DcMotorEx.Direction.FORWARD);
 
-        // important slide shit
-        leftBall.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        // important slide shit and also servo fuckin NIBBa
+
+        leftBall.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightBall.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -62,23 +70,27 @@ public class TeleOpDriveOpMode extends OpMode{
 
         // Encoders
         leftBall.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        leftBall.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBall.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         // drive train using encoders? most likely for roadrunner but this may be removed
         rightBall.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         rightBall.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        // initialize it or something
+        gripper.setDirection(Servo.Direction.FORWARD);
+        NASA.setDirection(Servo.Direction.FORWARD);
 
         // IMU parameters that we probably have to change once we get to testing the manual mode
         BHI260IMU.Parameters imuParams = new BHI260IMU.Parameters(new RevHubOrientationOnRobot(
@@ -88,6 +100,7 @@ public class TeleOpDriveOpMode extends OpMode{
     }
 
     // these variables are currently controlling both slides because im assuming they're working in uniform and not independant of each other's actions
+    int servoshit = 0;
     int targetPosition = 1;
     int currentPosition = 0;
     boolean slowMode = false;
@@ -172,10 +185,27 @@ public class TeleOpDriveOpMode extends OpMode{
             rightBall.setPower(0);
         }
 
+        // is this how a servo works
+        // close/open servo
+        if (gamepad1.right_bumper){
+            gripper.setPosition(1.0);
+        }
+        else {
+            gripper.setPosition(0.0);
+        }
+
+        // blast off
+        if (gamepad1.left_bumper) {
+            NASA.setPosition(1.0);
+        }
+        else {
+            NASA.setPosition(0.0);
+        }
+
         /*
         Enabling of precise control mode, if it even works
          */
-        if (gamepad1.dpad_up) {
+        if (gamepad1.left_bumper) {
             slowMode = true;
         }
         // idk what this else is checking for, worst case scenario, assign a specific button to turn precision mode off
@@ -183,12 +213,12 @@ public class TeleOpDriveOpMode extends OpMode{
             slowMode = false;
         }
 
-        /*
+/*
         frontLeft.setPower(fourDriveMechanumFrontLeftPower);
         backLeft.setPower(fourDriveMechanumBackLeftPower);
         frontRight.setPower(fourDriveMechanumFrontRightPower);
         backRight.setPower(fourDriveMechanumBackRightPower);
-        */
+*/
 
         frontLeft.setPower(fieldCentricFLP);
         backLeft.setPower(fieldCentricBLP);

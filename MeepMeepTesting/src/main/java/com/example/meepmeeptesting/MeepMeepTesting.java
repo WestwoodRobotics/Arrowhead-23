@@ -16,7 +16,7 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-35.25, -58, Math.toRadians(90)))
+                        drive.trajectorySequenceBuilder(new Pose2d(11.25, -60, Math.toRadians(90)))
 
                                 // stack pixel on backboard and park
                                 /*
@@ -32,13 +32,13 @@ public class MeepMeepTesting {
                                 */
 
                                 // park - red - right side (11.5, -60)
-                                // .strafeRight(47.5)
+                                 .strafeRight(47.5)
 
                                 // park - red - left side (-36, -58)
-                                .forward(35)
-                                .strafeRight(100)
+                                //.forward(35)
+                                //.strafeRight(100)
 
-                                // .strafeLeft(47.5) // blue side park)
+                                //.strafeLeft(47.5) // blue side park)
 
                                 .build()
                 );

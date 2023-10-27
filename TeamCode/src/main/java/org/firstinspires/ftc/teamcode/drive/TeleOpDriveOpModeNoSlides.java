@@ -158,7 +158,7 @@ public class TeleOpDriveOpModeNoSlides extends OpMode{
             slowMode = true;
         }
         // idk what this else is checking for, worst case scenario, assign a specific button to turn precision mode off
-        else {
+        else if (gamepad1.dpad_down){
             slowMode = false;
         }
 

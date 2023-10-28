@@ -34,7 +34,7 @@ public class DriveConstants {
      * If using the built-in motor velocity PID, update MOTOR_VELO_PID with the tuned coefficients
      * from DriveVelocityPIDTuner.
      */
-    public static final boolean RUN_USING_ENCODER = false;
+    public static final boolean RUN_USING_ENCODER = true; // TODO: marking this if i need to change it later
     public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0,
             getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
@@ -47,8 +47,14 @@ public class DriveConstants {
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
     public static double WHEEL_RADIUS = 1.889765; // in
+
+    // 16:1 according to Devak, flame him if auton fails
+    public static double GEAR_RATIO = 13.1; // output (wheel) speed / input (motor) speed
+    public static double TRACK_WIDTH = 13.0; // in
+
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
     public static double TRACK_WIDTH = 1; // in
+
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -56,6 +62,8 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
+
+    // TODO: I believe that we are not using drive encoders, therefore, these need to be tuned
     public static double kV = 1.0 / rpmToVelocity(MAX_RPM);
     public static double kA = 0;
     public static double kStatic = 0;
@@ -67,10 +75,23 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 30;
-    public static double MAX_ACCEL = 30;
-    public static double MAX_ANG_VEL = Math.toRadians(60);
-    public static double MAX_ANG_ACCEL = Math.toRadians(60);
+    public static double MAX_VEL = 90; // 7.5 ft/sec (90 inches/sec) is our max.
+    // update: apparently it's double according to Jihoon (which would be 15 ft/s, 180 wtvr)
+    // update 2: hopefully reet did it with diamater and im just stupid, we're keeping it at 90
+    // also, 16:1 is 1/60 in the equations, something we didn't do lol.
+
+    public static double MAX_ACCEL = 90; // default value is 30
+    // arbritrary but we are setting it to the same number as MAX_VEL. Only way to know the true value is through experimentation
+    // How to find true value:
+    // keep raising max acceleration until our path following begins to crumble
+
+    public static double MAX_ANG_VEL = Math.toRadians(60); // default is 180 degrees / s (s is seconds i believe?)
+    // we'll leave this as is for now, if we want a more accurate value we should find it empirically
+    // the "theoretical" calculation is just not good.
+
+    public static double MAX_ANG_ACCEL = Math.toRadians(60); // default is 180 degrees / s^2
+    // again, leave as is for the same reason we're leaving MAX_ANG_VEL as is
+
 
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.

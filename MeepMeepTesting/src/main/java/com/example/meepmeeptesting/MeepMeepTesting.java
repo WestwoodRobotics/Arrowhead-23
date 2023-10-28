@@ -16,9 +16,12 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(11.25, -60, Math.toRadians(90)))
+                        drive.trajectorySequenceBuilder(new Pose2d(-36, 58, Math.toRadians(-90)))
 
-                                // stack pixel on backboard and park
+                                // stack pixel on backboard and park (testing)
+                                // temporal markers are used to run multiple thigns at once
+                                // use addTemporalMarkers AND addTemporal Markers offset.
+
                                 /*
                                 .forward(20)
                                 // .waitSeconds(3
@@ -31,14 +34,26 @@ public class MeepMeepTesting {
                                 //.splineToLinearHeading(new Pose2d(60, -59.25, Math.toRadians(-90)), 0)
                                 */
 
-                                // park - red - right side (11.5, -60)
-                                 .strafeRight(47.5)
+                                // TODO-----------------------ParkOnly, Red, Close------------------------
+                                // startPose = (11.5, -60, -90 degrees) => 1.78 seconds
 
-                                // park - red - left side (-36, -58)
-                                //.forward(35)
-                                //.strafeRight(100)
+                                // .strafeRight(47.5)
 
-                                //.strafeLeft(47.5) // blue side park)
+                                // TODO-----------------------ParkOnly, Red, Far------------------------
+                                // startPose = (-36, -58, 90 degrees), => 4.37 seconds
+
+                                /*.forward(48)
+                                .strafeRight(95)*/
+
+                                // TODO-----------------------ParkOnly, Blue, Close------------------------
+                                // startPose = (11.5, 60, -90 degrees) => 1.78 seconds
+
+                                //.strafeLeft(47.5)
+
+                                // TODO-----------------------ParkOnly, Blue, Far------------------------
+                                // (-36, 58, -90 degrees) => 4.37 seconds
+                                .forward(48)
+                                .strafeLeft(95)
 
                                 .build()
                 );

@@ -1,31 +1,21 @@
 package org.firstinspires.ftc.teamcode.drive;
+
 import com.qualcomm.hardware.bosch.BHI260IMU;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-// field centric stuff
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import java.util.*;
 
 // TODO: check field centric mode
 // TODO: literally test the entire TeleOp drive LOL
 // slide1 is left ball, slide2 is right ball
 // i've left the non-field centric code in comments in the loop function, just in case field centric turns out to be awful
-@TeleOp(name = "TeleOpMain")
-public class TeleOpDriveOpMode extends OpMode{
+@TeleOp(name = "TeleOpTESTING")
+public class TeleOpTESTING extends OpMode{
     DcMotorEx frontLeft, frontRight, backLeft, backRight, leftBall, rightBall;
 
     Servo gripper, NASA, leftServo, rightServo;
@@ -139,7 +129,7 @@ public class TeleOpDriveOpMode extends OpMode{
         double rotX = fourDriveMechanumlinearX * Math.cos(-botHeading) - fourDriveMechanumlinearY * Math.sin(-botHeading);
         double rotY = fourDriveMechanumlinearX * Math.sin(-botHeading) + fourDriveMechanumlinearY * Math.cos(-botHeading);
 
-        rotX = rotX * 1.1;  // counteract imperfect strafing BUT removes a bit of percision
+        rotX = rotX * 1.1;  // counteract imperfect strafing
 
         /*
         double fourDriveMechanumFrontLeftPower = (fourDriveMechanumlinearY + fourDriveMechanumlinearX + fourDriveMechanumRotationalX) * multiplier;

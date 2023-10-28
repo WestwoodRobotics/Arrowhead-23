@@ -16,7 +16,7 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-36, 58, Math.toRadians(-90)))
+                        drive.trajectorySequenceBuilder(new Pose2d(-36, -58, Math.toRadians(90)))
 
                                 // stack pixel on backboard and park (testing)
                                 // temporal markers are used to run multiple thigns at once
@@ -42,8 +42,8 @@ public class MeepMeepTesting {
                                 // TODO-----------------------ParkOnly, Red, Far------------------------
                                 // startPose = (-36, -58, 90 degrees), => 4.37 seconds
 
-                                /*.forward(48)
-                                .strafeRight(95)*/
+                                .forward(48)
+                                .strafeRight(95)
 
                                 // TODO-----------------------ParkOnly, Blue, Close------------------------
                                 // startPose = (11.5, 60, -90 degrees) => 1.78 seconds
@@ -52,8 +52,8 @@ public class MeepMeepTesting {
 
                                 // TODO-----------------------ParkOnly, Blue, Far------------------------
                                 // (-36, 58, -90 degrees) => 4.37 seconds
-                                .forward(48)
-                                .strafeLeft(95)
+                                //.forward(48)
+                                //.strafeLeft(95)
 
                                 .build()
                 );

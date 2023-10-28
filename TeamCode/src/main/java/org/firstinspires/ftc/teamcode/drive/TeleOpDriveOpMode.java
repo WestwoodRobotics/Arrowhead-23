@@ -30,7 +30,7 @@ public class TeleOpDriveOpMode extends OpMode{
 
     Servo gripper, NASA, leftServo, rightServo;
 
-    // IMU var for field centric mode
+    // IMU variable for field centric mode
     BHI260IMU babymode;
 
     private ElapsedTime runtime  =  new ElapsedTime();
@@ -76,9 +76,9 @@ public class TeleOpDriveOpMode extends OpMode{
 
         rightBall.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         rightBall.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
         // drive train using encoders? most likely for roadrunner but this may be removed
-
-
+        // TODO----------------------------MIGHT NEED TO REMOVE THESE------------------------------------
         frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         frontLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -126,6 +126,7 @@ public class TeleOpDriveOpMode extends OpMode{
             multiplier = 1;
         }
 
+        // to be honest, i have no idea why we do this. might be to initialize field centric
         // make it so it's not easy to accidently hit the button
         // think of this like the xbox start button
         // can be changed if needed
@@ -149,7 +150,7 @@ public class TeleOpDriveOpMode extends OpMode{
         fix ???
         */
 
-        // denom is largest motor power (abs volue) or 1
+        // denom is largest motor power (abs value) or 1
         // ensures all powers maintain the same ratio
         // ONLY IF at least one is out of range [-1, 1]
         double denom = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(fourDriveMechanumRotationalX), 1);

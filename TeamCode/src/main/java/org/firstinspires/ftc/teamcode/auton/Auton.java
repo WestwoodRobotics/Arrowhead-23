@@ -35,7 +35,7 @@ public class Auton extends LinearOpMode {
         slideTwo.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         Servo clawForward1 = hardwareMap.get(Servo.class, "c1");
-        Servo clawForward2 = hardwareMap.get(Servo.class, "c2")''
+        Servo clawForward2 = hardwareMap.get(Servo.class, "c2");
         Servo claw = hardwareMap.get(Servo.class, "c");
        // ------------------INIT DONE--------------------
 

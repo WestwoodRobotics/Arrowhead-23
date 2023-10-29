@@ -1,34 +1,26 @@
 package org.firstinspires.ftc.teamcode.drive;
+
 import com.qualcomm.hardware.bosch.BHI260IMU;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-// field centric stuff
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import java.util.*;
+import org.firstinspires.ftc.teamcode.R;
 
 // TODO: check field centric mode
 // TODO: literally test the entire TeleOp drive LOL
 // slide1 is left ball, slide2 is right ball
 // i've left the non-field centric code in comments in the loop function, just in case field centric turns out to be awful
-@TeleOp(name = "TeleOpMain")
-public class TeleOpTESTING extends OpMode{
+@TeleOp(name = "field-centric-OpMode")
+public class OpModeFCentric extends OpMode{
     DcMotorEx frontLeft, frontRight, backLeft, backRight, leftBall, rightBall;
 
-    Servo gripper, leftServo, rightServo, NASA;
+    Servo gripper, NASA, leftServo, rightServo;
 
     // IMU variable for field centric mode
     BHI260IMU babymode;
@@ -37,7 +29,7 @@ public class TeleOpTESTING extends OpMode{
 
     public void init() {
 
-        babymode = hardwareMap.get(BHI260IMU.class, "IMU");
+        babymode = hardwareMap.get(BHI260IMU.class, "imu");
 
         leftBall = hardwareMap.get(DcMotorEx.class, "leftBall");
         rightBall = hardwareMap.get(DcMotorEx.class, "rightBall");
@@ -47,7 +39,7 @@ public class TeleOpTESTING extends OpMode{
         backRight = hardwareMap.get(DcMotorEx.class, "backRight");
 
         gripper = hardwareMap.get(Servo.class, "Claw");
-        //NASA = hardwareMap.get(Servo.class, "Drone");
+        NASA = hardwareMap.get(Servo.class, "Drone");
         leftServo = hardwareMap.get(Servo.class, "leftClaw");
         rightServo = hardwareMap.get(Servo.class, "rightClaw");
 
@@ -77,21 +69,39 @@ public class TeleOpTESTING extends OpMode{
         rightBall.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         rightBall.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
+        // drive train using encoders? most likely for roadrunner but this may be removed
+        // TODO----------------------------MIGHT NEED TO REMOVE THESE------------------------------------
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
         // initialize it or something
         gripper.setDirection(Servo.Direction.FORWARD);
-        //NASA.setDirection(Servo.Direction.FORWARD);
+        NASA.setDirection(Servo.Direction.FORWARD);
         leftServo.setDirection(Servo.Direction.FORWARD);
         rightServo.setDirection(Servo.Direction.FORWARD);
 
         // IMU parameters that we probably have to change once we get to testing the manual mode
-        /*BHI260IMU.Parameters imuParams = new BHI260IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-*/
-        BHI260IMU.Parameters parameters = new BHI260IMU();
-        parameters.angleUnit = BHI260IMU.AngleUnit.DEGREES;
-        imu.initialize(parameters);
+/*        BHI260IMU.Parameters imuParams = new BHI260IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));*/
 
-        babymode.initialize(imuParams);
+        IMU.Parameters parameters = new IMU.Parameters(
+            new RevHubOrientationOnRobot(
+                    RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
+                    RevHubOrientationOnRobot.UsbFacingDirection.DOWN)
+                ); // change these to match our control hub
+
+        //babymode.initialize(imuParams);
+        babymode.initialize(parameters);
+        babymode.resetYaw();
     }
 
     // these variables are currently controlling both slides because im assuming they're working in uniform and not independant of each other's actions
@@ -100,12 +110,13 @@ public class TeleOpTESTING extends OpMode{
     int currentPosition = 0;
     boolean slowMode = false;
 
+    @Override // TODO------------REMOVE IF BREAKS------------------
     public void loop() {
         // this is drive, strafe, and turn, from the top down
         double fourDriveMechanumlinearY = -gamepad1.left_stick_y; // Y is reversed
         double fourDriveMechanumlinearX = gamepad1.left_stick_x;
         double fourDriveMechanumRotationalX = gamepad1.right_stick_x;
-
+        
         // slowmode uhhhuhhhuhhhh scale thing idfk LOL
         double multiplier;
 
@@ -120,12 +131,13 @@ public class TeleOpTESTING extends OpMode{
         // make it so it's not easy to accidently hit the button
         // think of this like the xbox start button
         // can be changed if needed
-        if (gamepad1.options) {
+        // used to be options button
+        if (gamepad1.dpad_left) {
             babymode.resetYaw();
         }
 
         double botHeading = babymode.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-
+        
         // rotate the movement direction counter to the bot's rotation
         double rotX = fourDriveMechanumlinearX * Math.cos(-botHeading) - fourDriveMechanumlinearY * Math.sin(-botHeading);
         double rotY = fourDriveMechanumlinearX * Math.sin(-botHeading) + fourDriveMechanumlinearY * Math.cos(-botHeading);
@@ -150,7 +162,7 @@ public class TeleOpTESTING extends OpMode{
         double fieldCentricFRP = ((rotY - rotX - fourDriveMechanumRotationalX) * multiplier) / denom;
         double fieldCentricBRP = ((rotY + rotX - fourDriveMechanumRotationalX) * multiplier) / denom;
 
-        currentPosition = leftBall.getCurrentPosition();
+         currentPosition = leftBall.getCurrentPosition();
 
         if (gamepad2.right_trigger > 0 ) {
             targetPosition -= 5;
@@ -187,43 +199,31 @@ public class TeleOpTESTING extends OpMode{
         // close/open servo
         // have claw closed as default.
         if (gamepad2.right_bumper){
-            gripper.setPosition(1);
+            gripper.setPosition(1.0);
         }
-        else if (gamepad2.left_bumper){
-            gripper.setPosition(0);
+        else {
+            gripper.setPosition(0.0);
         }
-        /*else {
-            gripper.setPosition(0);
-        }*/
 
 
         // TODO-------------------------------check if this works------------------------------------------------------------------------------------
         // blast off! (shoot the paper airplane, one time activation)
-        /*if (gamepad2.left_bumper) {
+        if (gamepad2.left_bumper) {
             NASA.setPosition(1.0);
         }
         else {
             NASA.setPosition(0.0);
-        }*/
+        }
 
         // TODO-------------------------------check if this works------------------------------------------------------------------------------------
         // controls the claw's servos.
-        /*if (gamepad2.right_stick_y > -1 && gamepad2.right_stick_y < 1){
+        if (gamepad2.right_stick_y > -1 && gamepad2.right_stick_y < 1){
             // I know for a fact you can use math to create a max and min for this variable.
-            if (rotateClaw <= 1 || rotateClaw >= 0){
+            if (rotateClaw < 1 || rotateClaw > -1){
                 rotateClaw += gamepad2.right_stick_y;
             }
             leftServo.setPosition(rotateClaw);
             rightServo.setPosition(rotateClaw);
-        }*/
-
-        if (gamepad2.dpad_down){
-            //leftServo.setPosition(0.0);
-            rightServo.setPosition(0.0);
-        }
-        else if (gamepad2.dpad_up){
-            //leftServo.setPosition(1);
-            rightServo.setPosition(0.5); // servo range is too far, just go half of it's max range
         }
 
         /*
@@ -257,12 +257,5 @@ public class TeleOpTESTING extends OpMode{
         telemetry.addData("TargetPosForSlides: ", targetPosition);
         telemetry.addData("CurrentPosForSlides: ", currentPosition);
         telemetry.addData("Slowmode: ", slowMode);
-        telemetry.addData("left stick x: ", gamepad1.left_stick_x);
-        telemetry.addData("left stick y: ", gamepad1.left_stick_y);
-        telemetry.addData("FLP: ", fieldCentricFLP);
-        telemetry.addData("FRP: ", fieldCentricFRP);
-        telemetry.addData("BLP: ", fieldCentricBLP);
-        telemetry.addData("BRP: ", fieldCentricBRP);
-        telemetry.addData("swaedf", gamepad2.dpad_up);
     }
 }
